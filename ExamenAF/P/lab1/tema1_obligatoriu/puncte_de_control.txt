@@ -1,0 +1,65 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+ifstream in("graf.in");
+
+vector<vector<int>> graf;
+vector<int> distanta;
+
+//parcurgere pe latime standard
+
+void bfs(int node) {
+    queue<int> q;
+    q.push(node);
+    distanta[node] = 0;
+
+    while(!q.empty()) {
+        int node = q.front();
+        q.pop();
+        for(auto neigh :graf[node]) {
+            if(distanta[neigh] == -1) {
+                q.push(neigh);
+                distanta[neigh] = 1 + distanta[node];
+            }
+        }
+    }
+}
+
+int main(){
+    int n, m;
+    in>>n>>m;
+
+    graf.resize(n+1);
+
+    for(int i = 0; i < m; i++){
+        int nod, dest;
+        in>>nod>>dest;
+        graf[nod].push_back(dest);
+        graf[dest].push_back(nod);
+    }
+
+    int pctControl[1001];
+    int k=0;
+    while(!in.eof()){
+        in>>pctControl[k++];
+    }
+
+    vector<vector<int>> distante;
+    //distante.resize(n+1);
+    distanta.assign(n+1, -1);
+
+    for(int i=0;i<k-1;i++) {
+        bfs(pctControl[i]);
+        distante.push_back(distanta);
+        distanta.assign(n + 1, -1);
+    }
+
+    distanta.assign(n + 1, 1000000);
+    for(int i = 1; i <= n; i++) {
+        for(int j=0; j < k-1; j++)
+            distanta[i] = min(distante[j][i], distanta[i]);
+        cout<<distanta[i]<<" ";
+    }
+
+    return 0;
+}

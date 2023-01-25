@@ -1,0 +1,12 @@
+void dfs(int x)
+{
+    viz[x] = 1;
+    for (auto y: a[x])
+    {
+        if (!viz[y])
+        {
+            dfs(y);
+        }
+    }
+    s.push_back(x);
+}

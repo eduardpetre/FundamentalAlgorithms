@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+ifstream fin("input.in");
+ofstream fout("apm.out");
+
+struct muchie{
+    int x, y, cost;
+} graf[100500];
+vector<muchie> ans;
+int parinte[100500], n, m;
+bool compara(muchie a, muchie b){
+    return a.cost<b.cost;
+}
+
+int Find(int x){
+    if(parinte[x] == x)
+        return x;
+    parinte[x] = Find(parinte[x]);
+    return Find(parinte[x]);
+}
+
+void Union(int a, int b){
+    parinte[Find(a)] = Find(b);
+}
+
+int main(){
+    fin>>n>>m;
+    for(int i=0; i<m; i++){
+        muchie mch;
+        fin>>mch.x>>mch.y>>mch.cost;
+        graf[i]=mch;
+    }
+
+    for(int i=1; i<=n; i++)
+        parinte[i] = i;
+    sort(graf, graf+m, compara);
+    int cost = 0;
+    for(int i=0; i<m; i++){
+        if(Find(graf[i].x) != Find(graf[i].y)){
+            Union(Find(graf[i].x), Find(graf[i].y));
+            cost+=graf[i].cost;
+            ans.push_back(graf[i]);
+        }
+    }
+    cout<<cost<<endl<<ans.size()<<endl;
+    for(int i=0; i<ans.size(); i++)
+        cout<<ans[i].x<<' '<<ans[i].y<<endl;
+}

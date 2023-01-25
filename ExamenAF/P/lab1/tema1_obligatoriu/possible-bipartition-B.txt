@@ -1,0 +1,85 @@
+//in cazul in care este bipartit vom imparti cele doua grupe in functie de paritatea nivelelor (nodurile cu lvl par in grupa A, iar cele cu nivel impar in grupa B)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+ifstream fin("graf.in");
+int n;
+vector<vector<int>> edges;
+vector<vector<int>> possibleBipartition(int n, vector<vector<int>>& edges) {
+    queue<int> q;
+    vector<int> level(n+1, 0);
+    vector<bool> visit(n+1, false);
+    vector<vector<int>> graf(n+1);
+    vector<vector<int>> ans;
+    vector<int> gr1, gr2;
+    bool ok=true;
+    for (auto &edge: edges)
+    {
+        int u = edge[0];
+        int v = edge[1];
+        graf[u].push_back(v);
+        graf[v].push_back(u);
+    }
+    for(int i=1; i<=n; i++){
+        if(!visit[i]){
+            q.push(i);
+            while(!q.empty()){
+                int u = q.front();
+                q.pop();
+                for(int i=0; i < graf[u].size(); i++){
+                    if(!visit[graf[u][i]]){
+                        q.push(graf[u][i]);
+
+                        visit[graf[u][i]] = true;
+
+                        level[graf[u][i]] = level[u] + 1;
+                    }
+                    else if (level[u] == level[graf[u][i]]) {
+                        ok = false;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    if(ok == true)
+        for(int i=1; i<=n; i++){
+            if(level[i] % 2 == 0)
+                gr1.push_back(i);
+            else gr2.push_back(i);
+        }
+    ans.push_back(gr1);
+    ans.push_back(gr2);
+    return ans;
+}
+
+int main(){
+    fin>>n;
+    vector<int> edge;
+    while(!fin.eof()){
+        int node, dest;
+        fin>>node>>dest;
+        edge.clear();
+        edge.push_back(node);
+        edge.push_back(dest);
+        edges.push_back(edge);
+    }
+    vector<vector<int>> ans = possibleBipartition(n, edges);
+    bool ok = true;
+    for(int i = 0; i < ans.size(); i++){
+        if(ans[i].size() == 0){
+            cout<<"Graful nu e bipartit";
+            ok = false;
+            break;
+        }
+    }
+    if(ok==true)
+        for(int i = 0; i < 2; i++){
+            cout<<"Grupa "<<i+1<<": ";
+            for(int j = 0; j < ans[i].size(); j++){
+                cout<<ans[i][j]<<' ';
+            }
+            cout<<endl;
+        }
+}

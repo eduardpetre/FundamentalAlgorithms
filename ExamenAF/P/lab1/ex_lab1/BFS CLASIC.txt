@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+ifstream fin("graf.in");
+
+vector<int> graf[100];
+vector<int> coada;
+
+void bfs(int s, vector<int>graf[], bool visit[]){
+    queue<int>q;
+    q.push(s);
+    visit[s]=true;
+    while(!q.empty()){
+        int u=q.front();
+        cout<<u<<" ";
+        q.pop();
+    //loop for traverse
+        for(int i=0;i<graf[u].size();i++){
+            if(!visit[graf[u][i]]){
+                q.push(graf[u][i]);
+                visit[graf[u][i]]=true;
+            }
+        }
+    }
+}
+
+
+int main(){
+    int n, m, s;
+    bool visit[100];
+    fin>>n>>m>>s;
+
+    for(int i=0; i<m; i++){
+        int nod1, nod2;
+        fin>>nod1>>nod2;
+        graf[nod1].push_back(nod2);
+    }
+
+    bfs(s, graf, visit);
+}
+
+
+
+
+
+
+
+DFS SAME DOAR CU STACK

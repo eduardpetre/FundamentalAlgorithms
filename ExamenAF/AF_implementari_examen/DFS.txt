@@ -1,0 +1,43 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+ifstream fin("dfs.in");
+ofstream fout("dfs.out");
+
+int n, m, s;
+vector<int> graf[100500];
+bool viz[100500];
+int cc = 0;
+stack<int> stk;
+
+void dfs(int s){
+    if(viz[s]==false){
+        cc++;
+    }
+
+    viz[s] = true;
+
+    for(int i=0; i < graf[s].size(); i++){
+        if(!viz[graf[s][i]])
+            dfs(graf[s][i]);
+    }
+}
+
+int main(){
+    int n, m;
+    fin>>n>>m;
+    for(int i=0; i<m; i++){
+        int x, y;
+        fin>>x>>y;
+        graf[x].push_back(y);
+        graf[y].push_back(x);
+    }
+    int ok = 0;
+    for(int i=1; i<=n; i++){
+        dfs(i);
+        if(cc>0)
+            ok++;
+        cc = 0;
+    }
+    fout<<ok;
+}

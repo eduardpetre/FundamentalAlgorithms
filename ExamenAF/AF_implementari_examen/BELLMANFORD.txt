@@ -1,0 +1,63 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+ifstream fin("bellmanford.in");
+ofstream fout("bellmanford.out");
+
+vector<pair<int, int>> graf[50010];
+int minim[50010], n, m, cnt[50010];
+queue<int> q;
+const int ciclu = 1;
+bool inq[50010];
+
+bool bf(int node = 1){
+    q.push ( node );
+    minim[node] = 0;
+
+    while ( ! q.empty () ) {
+        int node = q.front();
+        q.pop ();
+        inq[node] = 0;
+        for (auto &x: graf[node] ){
+            int next_node = x.first;
+            int cost = x.second;
+
+            if ( minim[node] + cost < minim[next_node] ) {
+                minim[next_node] = minim[node] + cost;
+                cnt[next_node]++;
+		
+		//daca are ciclu negativ o sa se invarta in el la infinit
+                if ( cnt[next_node] > n )
+                    return ciclu;
+                if ( inq[next_node] == false ) {
+                    q.push ( next_node );
+                    inq[next_node] = true;
+                }
+            }
+        }
+    }
+    return !ciclu;
+}
+
+int main(){
+    fin>>n>>m;
+
+    for (int i = 1; i <= n; i++)
+        minim[i] = 1e9;
+
+    for (int i = 1; i <= m; i++) {
+        int x, y, z;
+        fin >> x >> y >> z;
+        graf[x].push_back({y, z});
+    }
+
+    if ( bf () == ciclu )
+        fout << "Ciclu negativ!\n";
+    else {
+        for ( int i = 2; i <= n; i++ )
+            if ( minim[i] == 1e9)
+                fout<< 0 <<' ';
+            else
+                fout << minim[i]  << ' ';
+    }
+}

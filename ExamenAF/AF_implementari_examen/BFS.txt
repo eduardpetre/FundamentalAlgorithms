@@ -1,0 +1,56 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+ifstream fin("bfs.in");
+ofstream fout("bfs.out");
+
+int n, m, s;
+vector<int> graf[100500];
+bool viz[100500];
+int dist[100500];
+queue<int> q;
+
+
+void bfs(int s){
+    viz[s] = true;
+    q.push(s);
+    dist[s] = 0;
+    while(!q.empty()){
+        int nod = q.front();
+        q.pop();
+        for(int j=0; j<(int)graf[nod].size(); j++){
+            if(viz[graf[nod][j]] == false){
+                q.push(graf[nod][j]);
+                viz[graf[nod][j]] = true;
+                dist[graf[nod][j]] = 1 + dist[nod];
+            }
+        }
+    }
+}
+
+int main(){
+    fin>>n>>m>>s;
+    for(int i=1; i<=m; i++){
+        int x, y;
+        fin>>x>>y;
+        graf[x].push_back(y);
+    }
+
+    for(int i=1; i<=n; i++){
+        dist[i] = -1;
+    }
+
+    bfs(s);
+/*
+    for(int i=1; i<=n; i++){
+        cout<<i<<": ";
+        for(int j=0; j<graf[i].size(); j++){
+            cout<<graf[i][j]<<' ';
+        }
+    cout<<endl;
+    }
+*/
+    for(int i=1; i<=n; i++){
+        fout<<dist[i]<<' ';
+    }
+}

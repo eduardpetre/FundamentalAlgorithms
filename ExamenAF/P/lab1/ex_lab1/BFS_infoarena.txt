@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+ifstream fin("graf.in");
+
+vector<vector<int>> graf;
+vector<int> distanta;
+
+void bfs(int node) {
+    queue<int> Q;
+    Q.push(node);
+    distanta[node] = 0;
+    while(!Q.empty()) {
+        int node = Q.front();
+        Q.pop();
+        for(auto neigh :graf[node]) {
+            if(distanta[neigh] == -1) {
+                Q.push(neigh);
+                distanta[neigh] = 1 + distanta[node];
+            }
+        }
+    }
+}
+
+int main(){
+    int N, M, S;
+    fin>>N>>M>>S;
+
+    graf.resize(N + 1);
+    distanta.resize(N + 1);
+
+    for(int i=0; i<N+1; i++)
+        distanta[i] = -1;
+
+    for(int i = 1; i <= M; i++)
+    {
+        int nod, dest;
+        fin>>nod>>dest;
+        graf[nod].push_back(dest);
+    }
+
+    bfs(S);
+
+    for(int i = 1; i < distanta.size(); i++) {
+        cout<<distanta[i]<<" ";
+    }
+
+    return 0;
+}

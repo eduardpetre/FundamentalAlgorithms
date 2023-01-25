@@ -1,0 +1,68 @@
+//parcurgem printr un dfs graful normal, apoi parcurgem prin alt dfs graful inversat detectand componentele conexe. (dupa prima parcurgere resetam vizitat, si se parcurge in ordine inversa)
+//sortare topologica apoi le parcurg invers
+
+#include <bits/stdc++.h>
+using namespace std;
+
+ifstream fin("graf.in");
+
+int n, m, cc;
+bool vizitat[100005];
+vector <int> ord, ctc[100005];
+vector <int> graf[100005], graf_rev[100005];
+
+void dfs_clasic(int nod) //sorteaza topologic
+{
+    vizitat[nod] = true;
+    for(int i = 0; i < graf[nod].size(); i++)
+        if(!vizitat[graf[nod][i]])
+            dfs_clasic(graf[nod][i]);
+    ord.push_back(nod);
+}
+
+
+void dfs_cc(int nod) //aflam componenta conexa
+{
+    vizitat[nod] = true;
+    ctc[cc].push_back(nod);
+    for(int i = 0; i < graf_rev[nod].size(); i++)
+        if(!vizitat[graf_rev[nod][i]])
+            dfs_cc(graf_rev[nod][i]);
+}
+
+int main()
+{
+    fin >> n >> m;
+    for(int i = 1; i <= m; i++)
+    {
+        int x, y;
+        fin >> x >> y;
+        graf[x].push_back(y);
+        graf_rev[y].push_back(x);
+    }
+
+    for(int i = 1; i <= n; i++)
+        if(!vizitat[i])
+            dfs_clasic(i);
+
+    for(int i = 1; i <= n; i++)
+        vizitat[i] = 0;
+
+//parcurgi invers + topological sort => componenta conexa
+    for(int i = ord.size() - 1; i >= 0; i--)
+    {
+        int nod = ord[i];
+        if(!vizitat[nod])
+        {
+            cc++;
+            dfs_cc(nod);
+        }
+    }
+    cout << cc << '\n';
+    for(int i = 1; i <= cc; i++)
+    {
+        for(int elem : ctc[i])
+            cout << elem << ' ';
+        cout << '\n';
+    }
+}

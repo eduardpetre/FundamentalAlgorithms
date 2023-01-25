@@ -1,0 +1,60 @@
+//parcurgem graful prin intermediul unui dfs, apoi verficam daca nivelul fiecarui nod din permutare este in ordine crescatoare
+
+#include <bits/stdc++.h>
+using namespace std;
+
+ifstream fin("graf.in");
+
+vector<vector<int>> graf;
+int n, m, s, ct=0;
+bool visit[100];
+int arr[100], ord[100], perm[100];
+
+bool cmp(int a, int b) {
+	return ord[a] < ord[b];
+}
+
+void dfs(int s){
+    visit[s] = true;
+    arr[ct++] = s;
+
+    for(int i=0; i < graf[s].size(); i++){
+        if(!visit[graf[s][i]])
+            dfs(graf[s][i]);
+    }
+}
+
+int main(){
+    fin>>n>>m;
+    for(int i=0; i<n; i++){
+        int x;
+        fin>>x;
+        perm[i] = x;
+        ord[perm[i]] = i;
+    }
+
+    graf.resize(n+1);
+
+    for(int i=0; i<m; i++){
+        int nod1, nod2;
+        fin>>nod1>>nod2;
+        graf[nod1].push_back(nod2);
+        graf[nod2].push_back(nod1);
+    }
+
+    for(int i = 0; i < graf.size(); ++i)
+		sort(graf[i].begin(), graf[i].end(), cmp);
+
+    dfs(1);
+
+    bool ok = true;
+	for(int i = 0; i < n; ++i)
+		if(perm[i] != arr[i]) {
+			ok = false;
+			break;
+		}
+
+	printf("%d\n", ok);
+
+    return 0;
+}

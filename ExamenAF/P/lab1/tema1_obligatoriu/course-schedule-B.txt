@@ -1,0 +1,99 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+ifstream fin("graf.in");
+
+vector<int> graf[100], perm;
+int level[100], intrari[100];
+int n, m, s;
+bool visit[100];
+vector<int> ans;
+int stk[1000], sizeOfStack;
+int nodrep = -1;
+bool wasfound = false;
+
+void dfs_topological(int v) {
+    visit[v]=true;
+    ans.push_back(v);
+    //cout<<v<<' ';
+    for (int i=0; i<graf[v].size(); i++) {
+        intrari[graf[v][i]]--;
+        if (!visit[graf[v][i]] && intrari[graf[v][i]] == 0){
+            dfs_topological(graf[v][i]);
+        }
+    }
+}
+
+//cautam un nod de la care poate porni un ciclu
+void dfs2(int v){
+    visit[v]=true;
+    //cout<<v<<' ';
+    for (int i=0; i<graf[v].size() && nodrep == -1; i++) {
+        if (!visit[graf[v][i]]){
+            dfs2(graf[v][i]);
+        } else {
+            nodrep = graf[v][i]; //am gasit un nod care a mai fost vizitat
+        }
+    }
+}
+
+//posibil ciclu pe care il construim prin acest dfs
+void dfs3(int s){
+    visit[s] = true;
+    stk[sizeOfStack++] = s;  //aici construim ciclul
+    for(int i=0; i < graf[s].size() && wasfound == false; i++){
+        if(!visit[graf[s][i]]){
+            dfs3(graf[s][i]);
+        }else if(graf[s][i] == nodrep){
+            //s a inchis ciclul
+	    wasfound = true;
+            for(int i = 0; i < sizeOfStack; i++)  //afisam ciclul
+                cout << stk[i] << ' ';
+        }
+    }
+    stk[--sizeOfStack] = 0;
+}
+
+void resetVisit(){
+    for(int i = 0; i <= n; i++)
+        visit[i] = false;
+}
+
+void topological_sort() {
+    resetVisit();
+    ans.clear();
+    for (int i = 0; i < n; ++i) {
+        if (!visit[i] && intrari[i] == 0)
+            dfs_topological(i);
+    }
+    //reverse(ans.begin(), ans.end());
+    if (ans.size() == n)
+        for(int i=0; i<ans.size(); i++){
+            cout<<ans[i]<<' ';
+        }
+    else{
+        cout<<"Cautam un ciclu"<<endl;
+        resetVisit();
+        for(int i = 0; i < n; i++)
+            if(!visit[i])
+                dfs2(i);
+        resetVisit();
+        dfs3(nodrep); //incepem sa cautam ciclul incepand cu nodrep (care reiese din dfs2 si despre el stim ca a fost vizitat de 2 ori)
+    }
+
+}
+
+int main(){
+    fin>>n>>m;
+    for(int i=0; i<m; i++){
+        int nod1, nod2;
+        fin>>nod1>>nod2;
+        graf[nod1].push_back(nod2);
+        intrari[nod2]++;
+    }
+
+    topological_sort();
+
+
+}
+

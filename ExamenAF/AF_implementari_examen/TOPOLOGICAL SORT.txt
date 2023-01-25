@@ -1,0 +1,38 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+ifstream fin("input.in");
+ofstream fout("output.out");
+
+int n, m, viz[100500], grad[100500];
+vector<int>graf[100500];
+vector<int> rsp;
+
+void dfs(int s){
+    rsp.push_back(s);
+    viz[s] = true;
+    for(int j = 0; j < (int)graf[s].size(); j++){
+        grad[graf[s][j]]--;
+        if(viz[graf[s][j]] == false && grad[graf[s][j]]==0){
+            dfs(graf[s][j]);
+        }
+    }
+
+}
+
+int main(){
+    int n, m;
+    fin>>n>>m;
+    for(int i=0; i<m; i++){
+        int x, y;
+        fin>>x>>y;
+        graf[x].push_back(y);
+        grad[y]++;
+    }
+    for(int i=1; i<=n; i++)
+        if (!viz[i] && grad[i] == 0)
+            dfs(i);
+
+    for(int i=0; i<n; i++)
+        cout<<rsp[i]<<' ';
+}

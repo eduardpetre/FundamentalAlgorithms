@@ -1,0 +1,50 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+ifstream fin("input.in");
+ofstream fout("apm.out");
+vector<pair<int, int>> graf[50003];
+priority_queue<pair<int, int>> q;
+int minim[50003];
+
+void dijkstra(int src) {
+
+    q.push ( { 0 , src }) ;
+	minim [src] = 0 ;
+
+    while (!q.empty()) {
+        int nod = q.top().second;
+        q.pop();
+        for(auto &vecin: graf[nod]){
+            int nextnod = vecin.first;
+            int cost = vecin.second;
+            if(minim[nod] + cost < minim[nextnod]){
+                minim[nextnod] = minim[nod] + cost;
+                q.push({-minim[nextnod], nextnod});
+            }
+       }
+    }
+}
+
+
+int main()
+{
+    int n, m;
+    fin>>n>>m;
+
+    for (int i = 1; i <= n; i++)
+        minim[i] = 1e9;
+
+    for (int i = 1; i <= m; i++) {
+        int x, y, z;
+        fin >> x >> y >> z;
+        graf[x].push_back({y, z});  //distanta de la x la y este z
+    }
+    dijkstra(1);
+    for(int i=2; i<=n; i++){
+        if(minim[i] == 1e9)
+            cout<<0<<' ';
+        else
+            cout<<minim[i]<<' ';
+    }
+}

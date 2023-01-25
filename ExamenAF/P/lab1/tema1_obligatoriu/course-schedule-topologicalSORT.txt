@@ -1,0 +1,123 @@
+//vom sorta topologic graful, iar in cazul in care vectorul rezultat are dimensiunea egala cu numarul nodurilor, atunci este posibila participarea la toate cursurile, in alt caz nu este posibila participarea
+
+#include <bits/stdc++.h>
+using namespace std;
+
+ifstream fin("graf.in");
+
+vector<int> graf[100], perm;
+int level[100];
+int n, m, s;
+vector<bool> visit(100);
+vector<int> ans;
+int intrari[100];
+
+
+void dfs(int v) {
+    visit[v] = true;
+    ans.push_back(v);
+    for (int i=0; i<graf[v].size(); i++) {
+        intrari[graf[v][i]]--;
+        if (!visit[graf[v][i]] && intrari[graf[v][i]] == 0){
+            dfs(graf[v][i]);
+        }
+    }
+}
+
+
+void topological_sort() {
+    visit.assign(n, false);
+    ans.clear();
+    for (int i = 0; i < n; ++i) {
+        if (!visit[i] && intrari[i] == 0)  //facem dfs doar din cele nevizitate si ale caror intrari sunt 0
+            dfs(i);
+    }
+    reverse(ans.begin(), ans.end());
+}
+
+int main(){
+    fin>>n>>m;
+
+    while(!fin.eof()){
+        int nod1, nod2;
+        fin>>nod1>>nod2;
+        graf[nod2].push_back(nod1);
+        intrari[nod1]++;
+    }
+
+    topological_sort();
+    //daca ans.size != n inseamna ca avem cicluri
+
+    if(ans.size()==n)
+	    for(int i=0; i<ans.size(); i++){
+        	cout<<ans[i]<<' ';
+    	}
+    else cout<<0;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+-------------------------------------------------------------------------------
+
+
+
+LEETCODE:
+
+
+
+
+
+
+class Solution {
+public:
+    vector<int> ans;
+    vector<int> intrari;
+    vector<vector<int>> graf;
+    vector<bool>visit;
+    
+    void dfs(int v) {
+        visit[v] = true;
+        ans.push_back(v);
+        for (int i=0; i<graf[v].size(); i++) {
+            intrari[graf[v][i]]--;
+            if (!visit[graf[v][i]] && intrari[graf[v][i]] == 0){
+                dfs(graf[v][i]);
+            }
+        }
+    }
+    
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        visit.resize(numCourses+1, false);
+        graf.resize(numCourses+1);
+        intrari.resize(numCourses+1, 0);        
+        
+        for (auto &edge: prerequisites){
+            int u = edge[0];
+            int v = edge[1];
+            graf[v].push_back(u);
+            intrari[u]++;
+        }
+    
+        visit.assign(numCourses, false);
+        
+        for (int i = 0; i < numCourses; ++i) {
+            if (!visit[i] && intrari[i] == 0)
+                dfs(i);
+        }
+        if(ans.size() != numCourses)
+		ans.clear();
+        return ans;
+    }
+};
+*/

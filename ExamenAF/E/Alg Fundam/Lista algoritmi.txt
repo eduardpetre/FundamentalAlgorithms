@@ -1,0 +1,11 @@
+BFS - parcurgere pe latime
+DFS - parcurgere pe adancime
+Topological sort
+Kosaraju - componente tare conexe
+Tarjan - 
+Kruskal - apcm (costul minim al tuturor muchiilor)
+Prim - apcm (costul minim al muchiilor adiacente)
+Dijkstra
+Bellman-Ford
+Parcurgere pe DAGs (Directed Acyclic Graphs) 
+Edmonds-Karp

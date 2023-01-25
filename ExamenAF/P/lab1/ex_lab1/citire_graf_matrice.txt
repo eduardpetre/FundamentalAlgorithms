@@ -1,0 +1,46 @@
+f = open('grafin', 'r')
+
+matrix = []
+
+lista_adiacenta = []
+
+def citire_graf_matrice_adiacenta(orientat):
+    global matrix
+    l = f.readline().split()
+    n = int(l[0])
+    m = int(l[1])
+
+    for i in range(0,n):
+        line = []
+        for j in range(0,n):
+            line.append(0)
+        matrix.append(line)
+
+    for i in range(0, m):
+        nod = f.readline().split()
+        matrix[ int(nod[0]) - 1 ][ int(nod[1]) - 1 ] = 1
+        if orientat != 1:
+            matrix[int(nod[1]) - 1][int(nod[0]) - 1] = 1
+
+
+def citire_graf_lista_adiacenta(orientat):
+    global lista_adiacenta
+    l = f.readline().split()
+    n = int(l[0])
+    m = int(l[1])
+
+    for i in range(0, n+1):
+        lista_adiacenta.append([])
+
+    for i in range(1, m+1):
+        nod = f.readline().split()
+        key = int(nod[0])
+        val = int(nod[1])
+        lista_adiacenta[key].append(val)
+        if orientat != 1:
+            lista_adiacenta[val].append(key)
+
+
+orientat = input()
+citire_graf_lista_adiacenta(orientat)
+citire_graf_matrice_adiacenta(orientat)
